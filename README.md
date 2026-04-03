@@ -178,7 +178,7 @@ Actual  Repay  [   6697          293  ]
 
 - 📁 **Dataset**: [Kaggle — Loan Approval Classification Data](https://www.kaggle.com/datasets/taweilo/loan-approval-classification-data)
 - 👤 **GitHub**: [github.com/pkale9650-ai](https://github.com/pkale9650-ai)
-- 💼 **LinkedIn**: [linkedin.com/in/pratik-kale](https://linkedin.com/in/pratik-kale)
+- 💼 **LinkedIn**: [linkedin.com/in/pratik-kale](https://www.linkedin.com/in/pratik-kale-400ba8327/)
 
 ---
 
