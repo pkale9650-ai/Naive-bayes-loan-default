@@ -16,7 +16,7 @@
 
 ## 📸 Demo
 
-![Loan Risk Predictor UI]("C:\Users\Pratik\OneDrive\Pictures\Screenshots\Screenshot 2026-04-03 115431.png")
+![Loan Risk Predictor UI](demo.png)
 
 > Enter applicant details → Get instant default probability + risk level assessment
 
@@ -172,7 +172,7 @@ Actual  No       ████        ░
 
 - 📁 **Dataset**: [Kaggle — Loan Approval Classification Data](https://www.kaggle.com/datasets/taweilo/loan-approval-classification-data)
 - 👤 **GitHub**: [github.com/pkale9650-ai](https://github.com/pkale9650-ai)
-- 💼 **LinkedIn**: [linkedin.com/in/pratik-kale]((https://www.linkedin.com/in/pratik-kale-400ba8327/))
+- 💼 **LinkedIn**: [linkedin.com/in/pratik-kale](https://www.linkedin.com/in/pratik-kale-400ba8327/)
 
 ---
 
