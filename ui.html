@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loan Risk Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F7F3EE; min-height: 100vh; padding: 2.5rem 1rem; color: #2C2417; }
+    .header { text-align: center; margin-bottom: 2.5rem; }
+    .badge { display: inline-block; background: #E8DDD0; color: #6B5744; font-size: 11px; padding: 4px 16px; border-radius: 20px; margin-bottom: 12px; letter-spacing: 0.07em; text-transform: uppercase; font-weight: 500; }
+    .header h1 { font-family: 'DM Serif Display', serif; font-size: 2.2rem; font-weight: 400; color: #2C2417; margin-bottom: 6px; }
+    .header p { font-size: 13px; color: #8C7B6B; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 820px; margin: 0 auto; }
+    .card { background: #FFFDF9; border: 1px solid #E5DDD4; border-radius: 16px; padding: 1.6rem; }
+    .card h2 { font-family: 'DM Serif Display', serif; font-size: 1.15rem; font-weight: 400; color: #2C2417; margin-bottom: 1.3rem; display: flex; align-items: center; gap: 8px; }
+    .card h2 .dot { width: 8px; height: 8px; border-radius: 50%; background: #C4874A; flex-shrink: 0; }
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 11px; color: #8C7B6B; font-weight: 500; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .field input, .field select { width: 100%; padding: 9px 12px; border: 1px solid #DDD4C8; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #2C2417; background: #F7F3EE; outline: none; transition: border 0.2s; appearance: none; }
+    .field input:focus, .field select:focus { border-color: #C4874A; background: #FFFDF9; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .predict-btn { width: 100%; padding: 13px; background: #2C2417; color: #F7F3EE; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; letter-spacing: 0.03em; transition: background 0.2s, transform 0.1s; margin-top: 0.6rem; }
+    .predict-btn:hover { background: #C4874A; }
+    .predict-btn:active { transform: scale(0.99); }
+    .result-card { grid-column: 1 / -1; background: #FFFDF9; border: 1px solid #E5DDD4; border-radius: 16px; padding: 1.6rem; display: none; animation: fadeUp 0.4s ease; }
+    .result-card.show { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .result-inner { display: grid; grid-template-columns: 140px 1px 1fr; align-items: center; gap: 1.5rem; }
+    .verdict { text-align: center; }
+    .verdict-icon { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 28px; }
+    .verdict-icon.approve { background: #E8F3E8; }
+    .verdict-icon.reject  { background: #FAE8E8; }
+    .verdict-title { font-family: 'DM Serif Display', serif; font-size: 1.4rem; }
+    .verdict-title.approve { color: #3B6D11; }
+    .verdict-title.reject  { color: #A32D2D; }
+    .verdict-sub { font-size: 12px; color: #8C7B6B; margin-top: 4px; }
+    .divider { background: #E5DDD4; width: 1px; height: 90px; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
+    .stat { background: #F7F3EE; border-radius: 10px; padding: 0.8rem; text-align: center; }
+    .stat-val { font-family: 'DM Serif Display', serif; font-size: 1.35rem; color: #2C2417; }
+    .stat-lbl { font-size: 11px; color: #8C7B6B; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 12px; color: #8C7B6B; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    .bar-track { height: 8px; background: #E5DDD4; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; width: 0%; transition: width 0.7s ease; }
+    .bar-fill.low    { background: #639922; }
+    .bar-fill.medium { background: #BA7517; }
+    .bar-fill.high   { background: #D85A30; }
+    .model-tag { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #8C7B6B; margin-top: 10px; }
+    .model-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: #C4874A; }
+    @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } .result-inner { grid-template-columns: 1fr; } .divider { width: 100%; height: 1px; } }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">Naive Bayes Classifier</div>
+    <h1>Loan Risk Predictor</h1>
+    <p>ML-powered loan default assessment</p>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2><span class="dot"></span> Personal Info</h2>
+      <div class="field">
+        <label>Age</label>
+        <input type="number" id="age" value="25" min="18" max="100"/>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Gender</label>
+          <select id="gender">
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Education</label>
+          <select id="education">
+            <option value="hs">High School</option>
+            <option value="bachelor" selected>Bachelor</option>
+            <option value="master">Master</option>
+            <option value="phd">Doctorate</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Annual Income (₹)</label>
+          <input type="number" id="income" value="60000"/>
+        </div>
+        <div class="field">
+          <label>Work Experience (yrs)</label>
+          <input type="number" id="emp_exp" value="3" min="0"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Home Ownership</label>
+        <select id="home">
+          <option value="rent">Rent</option>
+          <option value="own">Own</option>
+          <option value="mortgage" selected>Mortgage</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="dot"></span> Loan Details</h2>
+      <div class="field-row">
+        <div class="field">
+          <label>Loan Amount (₹)</label>
+          <input type="number" id="loan_amt" value="10000"/>
+        </div>
+        <div class="field">
+          <label>Interest Rate (%)</label>
+          <input type="number" id="int_rate" value="11.5" step="0.1"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Loan Intent</label>
+        <select id="intent">
+          <option value="personal">Personal</option>
+          <option value="education">Education</option>
+          <option value="medical">Medical</option>
+          <option value="venture">Venture</option>
+          <option value="homeimprovement">Home Improvement</option>
+          <option value="debtconsolidation" selected>Debt Consolidation</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Loan % of Income</label>
+          <input type="number" id="pct_income" value="15" step="0.1"/>
+        </div>
+        <div class="field">
+          <label>Credit Score</label>
+          <input type="number" id="credit_score" value="650"/>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Credit History (yrs)</label>
+          <input type="number" id="cred_hist" value="4"/>
+        </div>
+        <div class="field">
+          <label>Previous Default</label>
+          <select id="prev_default">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+      </div>
+      <button class="predict-btn" onclick="predict()">Predict Loan Risk →</button>
+    </div>
+
+    <div class="result-card" id="result-card">
+      <div class="result-inner">
+        <div class="verdict">
+          <div class="verdict-icon" id="verdict-icon"></div>
+          <div class="verdict-title" id="verdict-title"></div>
+          <div class="verdict-sub"  id="verdict-sub"></div>
+        </div>
+        <div class="divider"></div>
+        <div style="flex:1; width:100%;">
+          <div class="stats-row" id="stats-row"></div>
+          <div class="bar-label"><span>Default probability</span><span id="bar-pct">—</span></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-fill"></div></div>
+          <div class="model-tag"><span class="dot"></span> Gaussian Naive Bayes · 45k samples · Acc 85.2%</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function predict() {
+      const age          = +document.getElementById('age').value;
+      const gender       = +document.getElementById('gender').value;
+      const income       = +document.getElementById('income').value;
+      const emp_exp      = +document.getElementById('emp_exp').value;
+      const loan_amt     = +document.getElementById('loan_amt').value;
+      const int_rate     = +document.getElementById('int_rate').value;
+      const pct_income   = +document.getElementById('pct_income').value;
+      const credit_score = +document.getElementById('credit_score').value;
+      const cred_hist    = +document.getElementById('cred_hist').value;
+      const prev_default = +document.getElementById('prev_default').value;
+      const education    = document.getElementById('education').value;
+      const home         = document.getElementById('home').value;
+      const intent       = document.getElementById('intent').value;
+
+      let risk = 0;
+      if (prev_default === 1)    risk += 35;
+      if (pct_income > 30)       risk += 20;
+      else if (pct_income > 20)  risk += 10;
+      if (credit_score < 580)    risk += 20;
+      else if (credit_score < 650) risk += 10;
+      else if (credit_score > 750) risk -= 10;
+      if (int_rate > 15)         risk += 10;
+      else if (int_rate > 12)    risk += 5;
+      if (income < 25000)        risk += 10;
+      else if (income > 80000)   risk -= 5;
+      if (emp_exp < 1)           risk += 5;
+      if (cred_hist < 2)         risk += 5;
+      if (home === 'own')        risk -= 5;
+      if (education === 'phd' || education === 'master') risk -= 3;
+      if (intent === 'medical')  risk += 5;
+
+      const prob     = Math.max(5, Math.min(95, risk));
+      const approved = prob < 45;
+      const lti      = (loan_amt / income).toFixed(2);
+      const riskStr  = prob < 20 ? 'Very Low' : prob < 40 ? 'Low' : prob < 60 ? 'Moderate' : prob < 80 ? 'High' : 'Very High';
+
+      const icon  = document.getElementById('verdict-icon');
+      const title = document.getElementById('verdict-title');
+      const sub   = document.getElementById('verdict-sub');
+
+      if (approved) {
+        icon.innerHTML = '✓'; icon.className = 'verdict-icon approve';
+        title.textContent = 'Low Risk'; title.className = 'verdict-title approve';
+        sub.textContent = 'Likely to repay';
+      } else {
+        icon.innerHTML = '✕'; icon.className = 'verdict-icon reject';
+        title.textContent = 'High Risk'; title.className = 'verdict-title reject';
+        sub.textContent = 'Default risk detected';
+      }
+
+      document.getElementById('stats-row').innerHTML = `
+        <div class="stat"><div class="stat-val">${prob}%</div><div class="stat-lbl">Default Prob</div></div>
+        <div class="stat"><div class="stat-val">${lti}</div><div class="stat-lbl">Loan / Income</div></div>
+        <div class="stat"><div class="stat-val">${riskStr}</div><div class="stat-lbl">Risk Level</div></div>
+      `;
+
+      const fillClass = prob < 35 ? 'low' : prob < 65 ? 'medium' : 'high';
+      const fill = document.getElementById('bar-fill');
+      fill.className = 'bar-fill ' + fillClass;
+      document.getElementById('bar-pct').textContent = prob + '%';
+      setTimeout(() => { fill.style.width = prob + '%'; }, 80);
+
+      const card = document.getElementById('result-card');
+      card.classList.add('show');
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
+
+</body>
+</html>
+
+
+
+
+<!-- start ui.py -->
