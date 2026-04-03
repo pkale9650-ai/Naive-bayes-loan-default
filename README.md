@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Model-Gaussian%20Naive%20Bayes-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Accuracy-85.2%25-brightgreen?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Accuracy-80.4%25-brightgreen?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Dataset-45k%20Samples-orange?style=for-the-badge" />
   <img src="https://img.shields.io/badge/UI-HTML%20%2F%20CSS%20%2F%20JS-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python" />
@@ -69,10 +69,10 @@ The prediction is displayed as:
 |---|---|
 | **Algorithm** | Gaussian Naive Bayes |
 | **Library** | Scikit-learn |
-| **Accuracy** | **85.2%** |
+| **Accuracy** | **80.4%** |
 | **Training Samples** | ~45,000 |
 | **Preprocessing** | Label Encoding + IQR Outlier Removal |
-| **Model File** | `loan_model.pkl` (saved via `joblib`) |
+| **Model File** | `naive_bayes_model.pkl` (saved via `pickle`) |
 
 ### Why Naive Bayes?
 - ⚡ Extremely fast to train and predict
@@ -128,20 +128,26 @@ open ui.html
 ## 📊 Model Performance
 
 ```
-Accuracy  :  85.2%
-Precision :  0.84
-Recall    :  0.83
-F1 Score  :  0.83
+Accuracy        :  80.4%
+
+                  Precision   Recall   F1-Score   Support
+Class 0 (Repay) :   0.82       0.96      0.88      6990
+Class 1 (Default):  0.65       0.27      0.38      2010
+
+Macro Avg       :   0.73       0.61      0.63
+Weighted Avg    :   0.78       0.80      0.77
 ```
 
 ### Confusion Matrix
 
 ```
-              Predicted
-              No Default  Default
-Actual  No       ████        ░
-        Yes       ░         ████
+                  Predicted
+                  No Default   Default
+Actual  Repay  [   6697          293  ]
+        Default[   1474          536  ]
 ```
+
+> The model is strong at identifying repayers (96% recall) but conservative on defaults — typical Naive Bayes behaviour on imbalanced data.
 
 ---
 
@@ -153,8 +159,8 @@ Actual  No       ████        ░
 | Pandas & NumPy | Data manipulation |
 | Scikit-learn | ML model (GaussianNB) |
 | Matplotlib / Seaborn | EDA visualizations |
-| Joblib | Model serialization |
-| HTML / CSS / JS | Frontend UI (no framework) |
+| Pickle | Model serialization (`naive_bayes_model.pkl`) |
+| HTML / CSS / JS | Standalone frontend UI (no backend, no server) |
 
 ---
 
@@ -163,7 +169,7 @@ Actual  No       ████        ░
 - Applied **IQR-based outlier removal** for cleaner training data
 - Used **Label Encoding** for categorical variables (gender, education, intent, etc.)
 - Understood the **Naive Bayes assumption** — feature independence — and how it still performs well on structured tabular data
-- Serialized the trained model using `joblib` for frontend integration
+- Serialized the trained model using **pickle** for reuse
 - Built a **standalone HTML UI** with no backend, computing predictions client-side using a pre-computed probability mapping
 
 ---
@@ -172,13 +178,13 @@ Actual  No       ████        ░
 
 - 📁 **Dataset**: [Kaggle — Loan Approval Classification Data](https://www.kaggle.com/datasets/taweilo/loan-approval-classification-data)
 - 👤 **GitHub**: [github.com/pkale9650-ai](https://github.com/pkale9650-ai)
-- 💼 **LinkedIn**: [linkedin.com/in/pratik-kale](https://www.linkedin.com/in/pratik-kale-400ba8327/)
+- 💼 **LinkedIn**: [linkedin.com/in/pratik-kale](https://linkedin.com/in/pratik-kale)
 
 ---
 
 ## 🙏 Acknowledgements
 
-- Dataset by [taweilo](https://www.kaggle.com/taweilo) on Kaggle
+- Dataset sourced from [Kaggle — Loan Approval Classification Data](https://www.kaggle.com/datasets/taweilo/loan-approval-classification-data)
 - Guided learning through **Sheryians Coding School** under [Akarsh Vyas](https://www.linkedin.com/in/akarsh-vyas/)
 
 ---
