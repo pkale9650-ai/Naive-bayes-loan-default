@@ -16,7 +16,7 @@
 
 ## 📸 Demo
 
-![Loan Risk Predictor UI](demo.png)
+![Loan Risk Predictor UI]("C:\Users\Pratik\OneDrive\Pictures\Screenshots\Screenshot 2026-04-03 115431.png")
 
 > Enter applicant details → Get instant default probability + risk level assessment
 
